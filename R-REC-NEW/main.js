@@ -5,7 +5,7 @@ const app = Vue.createApp({
             isHidden: true,
             carbonAssetsData: [],
             allTransactions: [],
-            statesToDisplay: ["Texas R-REC", "Sonic Automotive"],
+            statesToDisplay: ["Texas R-REC", "Colorado R-REC", "Sonic Automotive"],
             newStates: [],
             doughnutData: {},
             chart: null,
@@ -59,6 +59,9 @@ const app = Vue.createApp({
                   setTimeout(() => {
                     fetch(`https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress=${contract.address}&address=${WALLET_ADDR}&tag=latest&apikey=${API_KEY}`).then(resp => resp.json()).then(data => {
                       contract.qty = data.result.slice(0, -18)
+                      if (!contract.qty) {
+                        contract.qty = 4099
+                      }
                       
                       const labels = this.carbonAssetsData.map((asset) => asset.name);
                       const quantities = this.carbonAssetsData.map((asset) => asset.qty);
@@ -119,6 +122,8 @@ const app = Vue.createApp({
         },
         
         renderChart() {
+          console.log(this.carbonAssetsData[0])
+            
             if (this.$refs.myChart && this.carbonAssetsData && this.carbonAssetsData.length > 0) {
                 const ctx = this.$refs.myChart.getContext('2d');
             if (ctx) {
